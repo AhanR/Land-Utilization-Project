@@ -92,7 +92,7 @@ else:
             mapValues.append(readMapScale(mapPortionImage, mapRange, [x/(len(mapRange)) for x in range(1,len(mapRange)+1)]))
         prGreen(folderName+" Map Evaluated, data saved in : " + folderName + "_Data.csv")
         mapValues = np.array(mapValues)
-        mapValues.tofile(folderName+'_Data.csv', sep = ',')
+        mapValues.tofile("Data Generated/"+folderName+"_Data.csv", sep=",")
     elif mapType == "mapped":
         colourMap = dict((subString.split(":")[1],subString.split(":")[0]) for subString in sys.argv[3].split(";"))
         # print(colourMap)
@@ -107,9 +107,9 @@ else:
             for t in values:
                 s+=t+" "
             mapValues.append(s)
-        prGreen(folderName+" Map evaluated for mapping, data saved in : " + folderName + "_Data.csv")
+        prGreen(folderName+" Map evaluated for mapping, data saved in : ./Data Generated" + folderName + "_Data.csv")
         # print(mapValues)
-        np.array(mapValues).tofile(folderName+"_Data.csv", sep=",")
+        np.array(mapValues).tofile("Data Generated/"+folderName+"_Data.csv", sep=",")
     else:
         prRed("invalid selection")
         exit()
