@@ -120,3 +120,6 @@ else:
 # image = cv2.imread('Vandalur_NDVI//filename_209.png')
 # image = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
 # print(readMapScale(image, [lower_bound,middle_bound,upper_bound],[-0.3,0.63]))
+# ub [0,128,211]
+# mb [60,176,240]
+# lb [200,255,255]
