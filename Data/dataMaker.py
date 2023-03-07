@@ -49,6 +49,14 @@ def strToHsv(s):
 def hsvToStr(arr):
     return "["+str(arr[0]) + "," + str(arr[1]) + "," + str(arr[2]) + "]"
 
+def printHelp():
+    prGreen("Use the following options:")
+    prLightPurple("python dataMaker.py <MAP NAME> <MAP TYPE> <EXTRA ARGUMENTS>")
+    prYellow("MAP TYPES:")
+    prLightGray("linear, mapped")
+    prYellow("EXTRA ARGUMENTS")
+    prLightGray("Can be colour values in array or map values as a JSON")
+
 # Colour Print ---------------------------------------------------------------------------------------------
 def prRed(skk): print("\033[91m{}\033[00m" .format(skk))
  
@@ -74,8 +82,9 @@ def prLightGray(skk): print("\033[97m{}\033[00m" .format(skk))
 def prBlack(skk): print("\033[98m{}\033[00m" .format(skk))
 
 # Main program ----------------------------------------------------------------------------------------------
-
-if len(sys.argv) < 2:
+if sys.argv[1] == "help":
+    printHelp()
+elif len(sys.argv) < 2:
     print("invalid args")
     exit()
 else:
