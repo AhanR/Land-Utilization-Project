@@ -22,9 +22,15 @@ def readMapScale(map, marks, scaleRange):
     for pixelRow in map:
         for pixel in pixelRow:
             for i in range(1,len(marks)):
-                if pixel[0] <= marks[i][0] and pixel[0] > marks[i-1][0]:
-                    totpixels += 1
-                    totalScaleValue += (i-1)/len(marks) + (pixel[0] - marks[i-1][0])/len(marks)/(marks[i][0] - marks[i-1][0])
+                # print(pixel,marks[i])
+                if type(pixel) != type(np.array([])):
+                    if pixel <= marks[i][0] and pixel > marks[i-1][0]:
+                        totpixels += 1
+                        totalScaleValue += (i-1)/len(marks) + (pixel - marks[i-1][0])/len(marks)/(marks[i][0] - marks[i-1][0])
+                else:
+                    if pixel[0] <= marks[i][0] and pixel[0] > marks[i-1][0]:
+                        totpixels += 1
+                        totalScaleValue += (i-1)/len(marks) + (pixel[0] - marks[i-1][0])/len(marks)/(marks[i][0] - marks[i-1][0])
     if totpixels == 0:
         return None
     totalScaleValue = totalScaleValue/totpixels*(scaleRange[1]-scaleRange[0]) + scaleRange[0]
