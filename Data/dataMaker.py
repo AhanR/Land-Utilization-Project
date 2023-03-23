@@ -22,7 +22,6 @@ def readMapScale(map, marks, scaleRange):
     for pixelRow in map:
         for pixel in pixelRow:
             for i in range(1,len(marks)):
-                # print(pixel,marks[i])
                 if type(pixel) != type(np.array([])):
                     if pixel <= marks[i][0] and pixel > marks[i-1][0]:
                         totpixels += 1
