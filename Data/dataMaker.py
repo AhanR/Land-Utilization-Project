@@ -123,7 +123,8 @@ else:
             mapValues.append(s)
         prGreen(folderName+" Map evaluated for mapping, data saved in : ./Data Generated" + folderName + "_Data.csv")
         # print(mapValues)
-        np.array(mapValues).tofile("Data Generated/"+folderName+"_Data.csv", sep=",")
+        # This is where the change was made for the file reading the data mirrored across the origin
+        np.array(mapValues[::-1]).tofile("Data Generated/"+folderName+"_Data.csv", sep=",")
     else:
         prRed("invalid selection")
         exit()
