@@ -40,9 +40,7 @@ def readMapScale(map, marks, scaleRange):
             if avgPixel[0] < marks[i][0] and avgPixel[0] >= marks[i-1][0]:
                 totpixels += 1
                 totalScaleValue += (i-1)/len(marks) + (avgPixel[0] - marks[i-1][0])/len(marks)/(marks[i][0] - marks[i-1][0])
-    print("AvgPixel",avgPixel, totalScaleValue)
-    # print(totalScaleValue)
-    totalScaleValue = totalScaleValue/totpixels*(scaleRange[1]-scaleRange[0]) + scaleRange[0]
+    totalScaleValue = totalScaleValue*(scaleRange[1]-scaleRange[0]) + scaleRange[0]
     return (totalScaleValue)
 
 def readMapMapped(map, colourMap):
