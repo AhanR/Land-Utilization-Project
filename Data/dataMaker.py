@@ -35,11 +35,13 @@ def readMapScale(map, marks, scaleRange):
         if type(avgPixel) != type(np.array([])):
             if avgPixel <= marks[i][0] and avgPixel > marks[i-1][0]:
                 totpixels += 1
-                totalScaleValue += (i-1)/len(marks) + (avgPixel - marks[i-1][0])/len(marks)/(marks[i][0] - marks[i-1][0])
+                totalScaleValue += (i)/len(marks) + (avgPixel - marks[i-1][0])/len(marks)/(marks[i][0] - marks[i-1][0])
+                break
         else:
-            if avgPixel[0] < marks[i][0] and avgPixel[0] >= marks[i-1][0]:
+            if avgPixel[0] <= marks[i][0] and avgPixel[0] >= marks[i-1][0]:
                 totpixels += 1
-                totalScaleValue += (i-1)/len(marks) + (avgPixel[0] - marks[i-1][0])/len(marks)/(marks[i][0] - marks[i-1][0])
+                totalScaleValue += (i)/len(marks) + (avgPixel[0] - marks[i-1][0])/len(marks)/(marks[i][0] - marks[i-1][0])
+                break
     totalScaleValue = totalScaleValue*(scaleRange[1]-scaleRange[0]) + scaleRange[0]
     return (totalScaleValue)
 
@@ -101,7 +103,7 @@ else:
         mapRange = [strToHsv(x) for x in sys.argv[3:]]
         prLightPurple("Evaluating the map...")
         mapsSegments = glob.glob(folderName+"/*.png")
-        prYellow("found " + str(len(mapsSegments))+" images in folder to evaluate")
+        # prYellow("found " + str(len(mapsSegments))+" images in folder to evaluate")
         prYellow("Colour Domain: "+str(mapRange))
         for mapPortion in mapsSegments:
             mapPortionImage = cv2.imread(mapPortion, cv2.COLOR_BGR2HLS)
@@ -112,7 +114,7 @@ else:
         prLightGray("Maximum: "+str(max(filteredValues)))
         prLightGray("Minimum: "+str(min(filteredValues)))
         prLightGray("Average: "+str(sum(filteredValues)/len(mapValues)))
-        prLightGray("Non empty items: "+str(len(filteredValues)))
+        prLightGray("Non empty items: "+str(len(filteredValues))+"/"+str(len(mapsSegments)))
         prLightGray("Variance: "+str(np.var(filteredValues)))
         mapValues.tofile("Data Generated/"+folderName+"_Data.csv", sep=",")
     elif mapType == "mapped":
