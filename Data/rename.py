@@ -11,10 +11,4 @@ def rename(folder = "Vandalur_LST"):
         os.rename(file, newname)
     print("renaming complete")
 
-# def recount(folder="Vandalur_LST"):
-#     mapSegments = glob.glob(folder+"/*.png")
-#     print("Found "+str(len(mapSegments)) + " images")
-#     for i in range(1,len(mapSegments)+1):
-#         if format(i, '04d') + ".png" in 
-
 rename("Vandalur_NDVI")

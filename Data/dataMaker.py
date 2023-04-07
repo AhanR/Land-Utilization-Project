@@ -17,21 +17,31 @@ lower_bound = np.array([4, 255, 255])
 # Take HSL value map reading in numpy
 def readMapScale(map, marks, scaleRange):
     totalScaleValue = 0
-    # mapsValue = []
+    mapsValue = []
     totpixels = 0
+    pixelValue = 0
+    # calculate the average hue for all colours except white and black
+    # when saturation value is zero, the colour is between black and white so checking for satuation value zero (pixel[2]) is good enough for right now
     for pixelRow in map:
         for pixel in pixelRow:
-            for i in range(1,len(marks)):
-                if type(pixel) != type(np.array([])):
-                    if pixel <= marks[i][0] and pixel > marks[i-1][0]:
-                        totpixels += 1
-                        totalScaleValue += (i-1)/len(marks) + (pixel - marks[i-1][0])/len(marks)/(marks[i][0] - marks[i-1][0])
-                else:
-                    if pixel[0] <= marks[i][0] and pixel[0] > marks[i-1][0]:
-                        totpixels += 1
-                        totalScaleValue += (i-1)/len(marks) + (pixel[0] - marks[i-1][0])/len(marks)/(marks[i][0] - marks[i-1][0])
+            if type(pixel) == type(np.array([])) and pixel[2]!=0 and pixel[0] != 255:
+                pixelValue += pixel[0]
+                totpixels+=1
+    # totpixels = len(mapsValue)
     if totpixels == 0:
         return None
+    avgPixel = pixelValue/totpixels
+    for i in range(1,len(marks)):
+        if type(avgPixel) != type(np.array([])):
+            if avgPixel <= marks[i][0] and avgPixel > marks[i-1][0]:
+                totpixels += 1
+                totalScaleValue += (i-1)/len(marks) + (avgPixel - marks[i-1][0])/len(marks)/(marks[i][0] - marks[i-1][0])
+        else:
+            if avgPixel[0] < marks[i][0] and avgPixel[0] >= marks[i-1][0]:
+                totpixels += 1
+                totalScaleValue += (i-1)/len(marks) + (avgPixel[0] - marks[i-1][0])/len(marks)/(marks[i][0] - marks[i-1][0])
+    print("AvgPixel",avgPixel, totalScaleValue)
+    # print(totalScaleValue)
     totalScaleValue = totalScaleValue/totpixels*(scaleRange[1]-scaleRange[0]) + scaleRange[0]
     return (totalScaleValue)
 
@@ -52,7 +62,7 @@ def strToHsv(s):
     return np.array(ans)
 
 def hsvToStr(arr):
-    return "["+str(arr[0]) + "," + str(arr[1]) + "," + str(arr[2]) + "]"
+    return "[" + str(arr[0]) + "," + str(arr[1]) + "," + str(arr[2]) + "]"
 
 def printHelp():
     prGreen("Use the following options:")
@@ -64,26 +74,19 @@ def printHelp():
 
 # Colour Print ---------------------------------------------------------------------------------------------
 def prRed(skk): print("\033[91m{}\033[00m" .format(skk))
- 
- 
+
 def prGreen(skk): print("\033[92m{}\033[00m" .format(skk))
- 
- 
+
 def prYellow(skk): print("\033[93m{}\033[00m" .format(skk))
- 
- 
+
 def prLightPurple(skk): print("\033[94m{}\033[00m" .format(skk))
- 
- 
+
 def prPurple(skk): print("\033[95m{}\033[00m" .format(skk))
- 
- 
+
 def prCyan(skk): print("\033[96m{}\033[00m" .format(skk))
- 
- 
+
 def prLightGray(skk): print("\033[97m{}\033[00m" .format(skk))
- 
- 
+
 def prBlack(skk): print("\033[98m{}\033[00m" .format(skk))
 
 # Main program ----------------------------------------------------------------------------------------------
@@ -101,11 +104,18 @@ else:
         prLightPurple("Evaluating the map...")
         mapsSegments = glob.glob(folderName+"/*.png")
         prYellow("found " + str(len(mapsSegments))+" images in folder to evaluate")
+        prYellow("Colour Domain: "+str(mapRange))
         for mapPortion in mapsSegments:
             mapPortionImage = cv2.imread(mapPortion, cv2.COLOR_BGR2HLS)
-            mapValues.append(readMapScale(mapPortionImage, mapRange, [x/(len(mapRange)) for x in range(1,len(mapRange)+1)]))
+            mapValues.append(readMapScale(mapPortionImage, mapRange,[0] + [1]))
         prGreen(folderName+" Map Evaluated, data saved in : " + folderName + "_Data.csv")
         mapValues = np.array(mapValues)
+        filteredValues = [x for x in filter(lambda x:x!=None,mapValues)]
+        prLightGray("Maximum: "+str(max(filteredValues)))
+        prLightGray("Minimum: "+str(min(filteredValues)))
+        prLightGray("Average: "+str(sum(filteredValues)/len(mapValues)))
+        prLightGray("Non empty items: "+str(len(filteredValues)))
+        # prLightGray("Variance: "+str(np.var(mapValues)))
         mapValues.tofile("Data Generated/"+folderName+"_Data.csv", sep=",")
     elif mapType == "mapped":
         colourMap = dict((subString.split(":")[1],subString.split(":")[0]) for subString in sys.argv[3].split(";"))
@@ -128,7 +138,7 @@ else:
     else:
         prRed("invalid selection")
         exit()
-    prLightGray("Operation Complete")
+    prGreen("Operation Complete")
     exit()
 
 # the solution that worked
