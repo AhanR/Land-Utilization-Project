@@ -113,7 +113,7 @@ else:
         prLightGray("Minimum: "+str(min(filteredValues)))
         prLightGray("Average: "+str(sum(filteredValues)/len(mapValues)))
         prLightGray("Non empty items: "+str(len(filteredValues)))
-        # prLightGray("Variance: "+str(np.var(mapValues)))
+        prLightGray("Variance: "+str(np.var(filteredValues)))
         mapValues.tofile("Data Generated/"+folderName+"_Data.csv", sep=",")
     elif mapType == "mapped":
         colourMap = dict((subString.split(":")[1],subString.split(":")[0]) for subString in sys.argv[3].split(";"))
