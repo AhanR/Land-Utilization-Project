@@ -3,6 +3,7 @@ import glob
 import cv2
 import sys
 import os
+from tqdm import tqdm
 
 # "#ffff00"
 # np.array([255,255,0])
@@ -102,9 +103,8 @@ else:
         mapRange = [strToHsv(x) for x in sys.argv[3:]]
         prLightPurple("Evaluating the map...")
         mapsSegments = glob.glob(folderName+"/*.png")
-        # prYellow("found " + str(len(mapsSegments))+" images in folder to evaluate")
         prYellow("Colour Domain: "+str(mapRange))
-        for mapPortion in mapsSegments:
+        for mapPortion in tqdm(mapsSegments):
             mapPortionImage = cv2.imread(mapPortion)
             mapPortionImage = cv2.cvtColor(mapPortionImage, cv2.COLOR_BGR2HSV)
             mapValues.append(readMapScale(mapPortionImage, mapRange,[0] + [1]))
