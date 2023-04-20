@@ -17,7 +17,6 @@ lower_bound = np.array([4, 255, 255])
 # Take HSL value map reading in numpy
 def readMapScale(map, marks, scaleRange):
     totalScaleValue = 0
-    mapsValue = []
     totpixels = 0
     pixelValue = 0
     # calculate the average hue for all colours except white and black
@@ -106,7 +105,8 @@ else:
         # prYellow("found " + str(len(mapsSegments))+" images in folder to evaluate")
         prYellow("Colour Domain: "+str(mapRange))
         for mapPortion in mapsSegments:
-            mapPortionImage = cv2.imread(mapPortion, cv2.COLOR_BGR2HLS)
+            mapPortionImage = cv2.imread(mapPortion)
+            mapPortionImage = cv2.cvtColor(mapPortionImage, cv2.COLOR_BGR2HSV)
             mapValues.append(readMapScale(mapPortionImage, mapRange,[0] + [1]))
         prGreen(folderName+" Map Evaluated, data saved in : " + folderName + "_Data.csv")
         mapValues = np.array(mapValues)
