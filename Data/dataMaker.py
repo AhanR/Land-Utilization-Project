@@ -49,9 +49,10 @@ def readMapMapped(map, colourMap):
     features = []
     for pixelRow in map:
         for pixel in pixelRow:
-            p = hsvToStr(pixel)
-            if p in colourMap.keys() and colourMap[p] not in features:
-                features.append(colourMap[p])
+            if str(pixel[0]) in colourMap.keys() and colourMap[str(pixel[0])] not in features:
+                # checks for black and white pixels
+                if type(pixel) == type(np.array([])) and pixel[2]!=0 and pixel[0] != 255:
+                    features.append(colourMap[str(pixel[0])])
     return features
 
 def strToHsv(s):
@@ -102,7 +103,7 @@ else:
     if mapType == "linear":
         mapRange = [strToHsv(x) for x in sys.argv[3:]]
         prLightPurple("Evaluating the map...")
-        mapsSegments = glob.glob(folderName+"/*.png")
+        mapsSegments = glob.glob(folderName+"/*.*")
         prYellow("Colour Domain: "+str(mapRange))
         for mapPortion in tqdm(mapsSegments):
             mapPortionImage = cv2.imread(mapPortion)
@@ -118,21 +119,21 @@ else:
         prLightGray("Variance: "+str(np.var(filteredValues)))
         mapValues.tofile("Data Generated/"+folderName+"_Data.csv", sep=",")
     elif mapType == "mapped":
-        colourMap = dict((subString.split(":")[1],subString.split(":")[0]) for subString in sys.argv[3].split(";"))
-        # print(colourMap)
+        # taking the hue value into account
+        colourMap = dict((subString.split(":")[1][1:-1].split(",")[0],subString.split(":")[0]) for subString in sys.argv[3][1:-1].split(";"))
         prLightPurple("Beginning map processing..")
-        print(folderName+"/*.png")
-        mapsSegments = glob.glob(folderName+"/*.png")
+        prYellow("Color map: "+ str(colourMap))
+        mapsSegments = glob.glob(folderName+"/*.*")
         prYellow("found " + str(len(mapsSegments))+" images in folder to evaluate")
         for mapPortion in mapsSegments:
-            mapPortionImage = cv2.imread(mapPortion, cv2.COLOR_BGR2HLS)
+            mapPortionImage = cv2.imread(mapPortion)
+            mapPortionImage = cv2.cvtColor(mapPortionImage, cv2.COLOR_BGR2HSV)
             values = readMapMapped(mapPortionImage, colourMap)
             s = ""
             for t in values:
                 s+=t+" "
             mapValues.append(s)
         prGreen(folderName+" Map evaluated for mapping, data saved in : ./Data Generated" + folderName + "_Data.csv")
-        # print(mapValues)
         # This is where the change was made for the file reading the data mirrored across the origin
         np.array(mapValues[::-1]).tofile("Data Generated/"+folderName+"_Data.csv", sep=",")
     else:
